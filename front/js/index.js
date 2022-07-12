@@ -9,7 +9,8 @@ let section = document.querySelector(".items");
 const fetchKanap = async () => {
   await fetch("http://localhost:3000/api/products/")
     .then(res => res.json())
-    .then(data => (kanap = data));
+    .then(data => (kanap = data))
+    .catch(err => alert("Ceci est une erreure") + err);
   console.log(kanap);
   console.table(kanap);
   kanapDisplay(kanap);
