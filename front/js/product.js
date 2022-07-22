@@ -35,26 +35,22 @@ const fetchArticle = async () => {
         colorOption.textContent = article.colors[i];
       }
     });
-  // un click pour le panier //
-  addToCart.addEventListener("click", basketTotal);
+  addToCart.addEventListener("click", basketChoice);
 };
 
-// ajout d'articles au panier //
+////////////////////// PANIER ///////////////////
 
-function basketTotal() {
+function basketChoice() {
   let colorChoice = document.getElementById("colors");
   let quantityChoice = document.getElementById("quantity");
 
   //nos objets iront dans client choice//
   let clientChoice = {};
   clientChoice.idUrl = idUrl;
-  console.log(clientChoice);
-
   let colorValue = colorChoice.value;
   let quantityValue = quantityChoice.value;
 
   //Regex//
-
   if (
     quantityChoice.value > 0 &&
     quantityChoice.value <= 100 &&
@@ -67,27 +63,30 @@ function basketTotal() {
   clientChoice.color = colorValue;
   clientChoice.quantity = quantityValue;
   console.log(clientChoice);
-  // Local Storage //
-  let kanapBasket = JSON.parse(localStorage.getItem("basket"));
 
-  if (kanapBasket == null) {
-    kanapBasket = [];
-    kanapBasket.push(clientChoice);
-    localStorage.setItem("basket", JSON.stringify(kanapBasket));
-  }
-  console.log(kanapBasket);
+  /// Cas ou kanap identique et couleur identique ///
 
-  return (localStorage.basketStock = JSON.stringify(clientChoice));
-  console.log(basketStock);
+  // création du panier //
 
-  function otherBasketTotal() {
-    let temporaryProducts = [];
-    let pushedProducts = [];
-    temporaryProducts.push(clientChoice);
-    //concaténation des tableaux de kanapBasket et temporaryProducts avec le spread selector//
-    pushedProducts = [...kanapBasket, ...temporaryProducts];
-
-    return (localStorage.basketStockTotal = JSON.stringify(pushedProducts));
+  let basket = JSON.parse(localStorage.getItem("basket"));
+  // si le panier existe déjà //
+  if (basket) {
+    // s'il y a déjà un produit avec l'ID et la couleur sélectionnée //
+    for (let choice of basket) {
+      if (choice.idUrl === idUrl && choice.color === colorValue) {
+        let additionQty = parseInt(choice.quantity) + parseInt(quantityValue);
+        choice.quantity = JSON.stringify(additionQty);
+        return (localStorage.basket = JSON.stringify(basket));
+      }
+    }
+    // ajout du nouveau produit dans le panier ou modif de la quantité si produit déjà identique avec meme couleur //
+    basket.push(clientChoice);
+    localStorage.setItem("basket", JSON.stringify(basket));
+    // si le panier n'existe pas //
+  } else {
+    basket = [];
+    basket.push(clientChoice);
+    localStorage.setItem("basket", JSON.stringify(basket));
   }
 }
 
