@@ -56,37 +56,37 @@ function basketChoice() {
     quantityChoice.value <= 100 &&
     colorChoice.value != 0
   ) {
+    // Choix du client //
+    clientChoice.color = colorValue;
+    clientChoice.quantity = quantityValue;
+    console.log(clientChoice);
+
+    /// Cas ou kanap identique et couleur identique ///
+
+    // création du panier //
+
+    let basket = JSON.parse(localStorage.getItem("basket"));
+    // si le panier existe déjà //
+    if (basket) {
+      // s'il y a déjà un produit avec l'ID et la couleur sélectionnée //
+      for (let choice of basket) {
+        if (choice.idUrl === idUrl && choice.color === colorValue) {
+          let additionQty = parseInt(choice.quantity) + parseInt(quantityValue);
+          choice.quantity = JSON.stringify(additionQty);
+          return (localStorage.basket = JSON.stringify(basket));
+        }
+      }
+      // ajout du nouveau produit dans le panier ou modif de la quantité si produit déjà identique avec meme couleur //
+      basket.push(clientChoice);
+      localStorage.setItem("basket", JSON.stringify(basket));
+      // si le panier n'existe pas //
+    } else {
+      basket = [];
+      basket.push(clientChoice);
+      localStorage.setItem("basket", JSON.stringify(basket));
+    }
   } else {
     alert("Veuillez saisir une couleur ET un nombre de canapé entre 1 et 100");
-  }
-  // Choix du client //
-  clientChoice.color = colorValue;
-  clientChoice.quantity = quantityValue;
-  console.log(clientChoice);
-
-  /// Cas ou kanap identique et couleur identique ///
-
-  // création du panier //
-
-  let basket = JSON.parse(localStorage.getItem("basket"));
-  // si le panier existe déjà //
-  if (basket) {
-    // s'il y a déjà un produit avec l'ID et la couleur sélectionnée //
-    for (let choice of basket) {
-      if (choice.idUrl === idUrl && choice.color === colorValue) {
-        let additionQty = parseInt(choice.quantity) + parseInt(quantityValue);
-        choice.quantity = JSON.stringify(additionQty);
-        return (localStorage.basket = JSON.stringify(basket));
-      }
-    }
-    // ajout du nouveau produit dans le panier ou modif de la quantité si produit déjà identique avec meme couleur //
-    basket.push(clientChoice);
-    localStorage.setItem("basket", JSON.stringify(basket));
-    // si le panier n'existe pas //
-  } else {
-    basket = [];
-    basket.push(clientChoice);
-    localStorage.setItem("basket", JSON.stringify(basket));
   }
 }
 
