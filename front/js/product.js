@@ -3,10 +3,8 @@
 const idUrl = new URL(window.location.href).searchParams.get("id");
 
 const fetchArticle = async () => {
-  let article = [];
   await fetch("http://localhost:3000/api/products/" + idUrl)
     .then(res => res.json())
-    .then(data => (article = data))
     .then(article => {
       // élement du DOM que l'on va utiliser //
       let imgSelect = document.querySelector(".item__img");
