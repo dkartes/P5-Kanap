@@ -16,11 +16,13 @@ function showBasket() {
   } else {
     let titleCart = document.querySelector("h1");
     titleCart.textContent += " est vide !";
-    console.log(titleCart);
   }
 }
+function saveBasket(basket) {
+  localStorage.setItem("basket", JSON.stringify(basket));
+}
 
-function getBasket(index) {
+async function getBasket(index) {
   let basket = JSON.parse(localStorage.getItem("basket"));
   if (basket.length != 0) {
     for (let choice of basket) {
@@ -64,15 +66,13 @@ function getBasket(index) {
           div3.className = "cart__item__content__description";
           div3.appendChild(h2Content).textContent = choice.name;
           div3.appendChild(colorContent).textContent = choice.color;
-          div3.appendChild(priceContent).textContent = choice.price;
+          div3.appendChild(priceContent).textContent = choice.price + " €";
 
           // création des settings //
           let div4 = document.createElement("div");
           let div5 = document.createElement("div");
           let qtyContent = document.createElement("p");
           let inputContent = document.createElement("input");
-          let div6 = document.createElement("div");
-          let deletItem = document.createElement("p");
 
           div2.appendChild(div4);
           div4.className = "cart__item__content__settings";
@@ -86,10 +86,48 @@ function getBasket(index) {
           inputContent.setAttribute("min", "1");
           inputContent.setAttribute("max", "100");
           inputContent.setAttribute("value", choice.quantity);
+
+          // creation de la partie delete //
+          let div6 = document.createElement("div");
+          let deleteItem = document.createElement("p");
           div4.appendChild(div6);
           div6.className = "cart__item__content__settings__delete";
-          div6.appendChild(deletItem).textContent = "Supprimer";
-          deletItem.className = "deleteItem";
+          div6.appendChild(deleteItem).textContent = "Supprimer";
+          deleteItem.className = "deleteItem";
+          // evenement au clic sur le boutton supprimer //
+          deleteItem.addEventListener("click", e => {
+            e.preventDefault;
+            // enregistre id et couleur par le boutton supprimer //
+            basket = basket.filter(
+              p => p.idUrl != choice.idUrl || p.color != choice.color
+            );
+            // sauvegarde dans le panier du localStorage //
+            alert("votre article a été supprimé du panier");
+            saveBasket(basket);
+            // refresh de la page //
+            location.reload();
+          });
+
+          // création de la case cart__price //
+          let cartPrice = document.querySelector(".cart__price");
+          let totalQtyContent = document.getElementById("totalQuantity");
+          let getTotalClassQty =
+            document.getElementsByClassName("itemQuantity");
+          let lengthTotalQty = getTotalClassQty.length;
+          let total = 0;
+          //console.log(lengthTotalQty);
+
+          // application du bouton supprimer //
+          // remobreFromBasket (choice);
+
+          /*cartPrice.appendChild(totalQtyContent);
+          for (let i = 0; i < lengthTotalQty; i++) {
+            total += lengthTotalQty[i].valueAsNumber;
+          }
+
+          totalQtyContent.textContent = total;
+*/
+          //console.log(total);
         }
       }
     }
@@ -97,26 +135,3 @@ function getBasket(index) {
 }
 
 showBasket();
-/*async function createBasketCart() {
-  await showBasket();
-  if (basket) {
-    for (let i = 0; i < basket.length; i++) {
-      await fetch("http://localhost:3000/api/products/" + basket[i].idUrl)
-        .then(res => res.json())
-        .then(article => {
-        
-
-          // création image //
-          let imgCreate = document.createElement("img");
-          let productImg = document.createElement("div");
-          cartArticle.appendChild(productImg);
-          productImg.className = "cart__item__img";
-          productImg.appendChild(imgCreate);
-          //imgCreate.setAttribute("src", basket[i].img);
-        });
-    }
-  }
-}
-*/
-//showBasket();
-//console.log(showBasket());
