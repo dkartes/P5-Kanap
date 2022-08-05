@@ -1,7 +1,10 @@
 let basketKey = window.localStorage.basket;
 const idUrl = new URL(window.location.href).searchParams.get("id");
+let basket = JSON.parse(localStorage.getItem("basket"));
 
+/////////////////////////////////////////////////////////////////
 // Presence du panier dans le local Storage + appel de l'api ? //
+/////////////////////////////////////////////////////////////////
 function showBasket() {
   if (basketKey) {
     fetch("http://localhost:3000/api/products")
@@ -9,6 +12,10 @@ function showBasket() {
       .then(objetProduits => {
         getBasket(objetProduits);
         console.log(objetProduits);
+      })
+      .then(modifQtt => {
+        modifQty(modifQtt);
+        console.log(modifQtt);
       })
       .catch(err => {
         console.log(err);
@@ -18,12 +25,17 @@ function showBasket() {
     titleCart.textContent += " est vide !";
   }
 }
+//////////////////////////////////////
+// Fonction de sauvegarde du panier //
+//////////////////////////////////////
 function saveBasket(basket) {
   localStorage.setItem("basket", JSON.stringify(basket));
 }
 
-async function getBasket(index) {
-  let basket = JSON.parse(localStorage.getItem("basket"));
+//////////////////////////
+// Affichage du panier //
+/////////////////////////
+function getBasket(index) {
   if (basket.length != 0) {
     for (let choice of basket) {
       console.log(choice);
@@ -88,6 +100,7 @@ async function getBasket(index) {
           inputContent.setAttribute("value", choice.quantity);
 
           // creation de la partie delete //
+
           let div6 = document.createElement("div");
           let deleteItem = document.createElement("p");
           div4.appendChild(div6);
@@ -108,30 +121,52 @@ async function getBasket(index) {
             location.reload();
           });
 
+          ///// FIN DE LA FONCTION /////
+          /////////////////////////////////////
           // création de la case cart__price //
-          let cartPrice = document.querySelector(".cart__price");
+          /////////////////////////////////////
+
+          // quantité des produits affichés sur la carte //
+
           let totalQtyContent = document.getElementById("totalQuantity");
           let getTotalClassQty =
             document.getElementsByClassName("itemQuantity");
           let lengthTotalQty = getTotalClassQty.length;
           let total = 0;
-          //console.log(lengthTotalQty);
 
-          // application du bouton supprimer //
-          // remobreFromBasket (choice);
-
-          /*cartPrice.appendChild(totalQtyContent);
-          for (let i = 0; i < lengthTotalQty; i++) {
-            total += lengthTotalQty[i].valueAsNumber;
+          for (let j = 0; j < lengthTotalQty; j++) {
+            total += getTotalClassQty[j].valueAsNumber;
           }
-
           totalQtyContent.textContent = total;
-*/
-          //console.log(total);
         }
       }
     }
   }
 }
 
+// modif des quantités //
+function modifQty() {
+  let totalQtyContent = document.getElementById("totalQuantity");
+  let getTotalClassQty = document.getElementsByClassName("itemQuantity");
+  let lengthTotalQty = getTotalClassQty.length;
+  for (let j = 0; j < lengthTotalQty; j++) {
+    getTotalClassQty[j].addEventListener("change", e => {
+      e.preventDefault;
+      let qtyModif = basket[j].quantity;
+      let qtyModifValue = getTotalClassQty[j].valueAsNumber;
+
+      let foundProduct = basket.find(p => p.idUrl == idUrl);
+      let foundQty = basket.find(p => p.qtyModifValue != qtyModif);
+
+      foundQty = qtyModifValue;
+      basket[j].quantity = foundQty;
+
+      // sauvegarde dans le panier du localStorage //
+      alert("vous avez modifié la quantité dans le panier");
+      saveBasket(basket);
+      // refresh de la page //
+      location.reload();
+    });
+  }
+}
 showBasket();

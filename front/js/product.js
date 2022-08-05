@@ -46,7 +46,7 @@ function basketChoice() {
   let clientChoice = {};
   clientChoice.idUrl = idUrl;
   let colorValue = colorChoice.value;
-  let quantityValue = quantityChoice.value;
+  let quantityValue = quantityChoice.valueAsNumber;
 
   //Regex//
   if (
