@@ -121,10 +121,7 @@ function getBasket(index) {
             location.reload();
           });
 
-          ///// FIN DE LA FONCTION /////
-          /////////////////////////////////////
           // création de la case cart__price //
-          /////////////////////////////////////
 
           // quantité des produits affichés sur la carte //
 
@@ -138,6 +135,15 @@ function getBasket(index) {
             total += getTotalClassQty[j].valueAsNumber;
           }
           totalQtyContent.textContent = total;
+
+          // prix total des produits //
+          let totalPriceContent = document.getElementById("totalPrice");
+
+          totalPrice = 0;
+          for (let k = 0; k < lengthTotalQty; k++) {
+            totalPrice += getTotalClassQty[k].valueAsNumber * basket[k].price;
+          }
+          totalPriceContent.textContent = totalPrice;
         }
       }
     }
