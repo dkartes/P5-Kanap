@@ -149,8 +149,10 @@ function getBasket(index) {
     }
   }
 }
-
+//////////////////////////
 // modif des quantités //
+/////////////////////////
+
 function modifQty() {
   let totalQtyContent = document.getElementById("totalQuantity");
   let getTotalClassQty = document.getElementsByClassName("itemQuantity");
@@ -175,4 +177,174 @@ function modifQty() {
     });
   }
 }
+
+///////////////////////
+// formulaire regex //
+//////////////////////
+
+// input du formulaire //
+const form = document.querySelector("form");
+const inputs = document.querySelectorAll(
+  'input[type="text"], input[type="email"]'
+);
+
+// selection des données du formulaire //
+let firstNameChoice, lastNameChoice, addressChoice, cityChoice, emailChoice;
+
+// on crée des checker //
+// afin d' analyser ce qu'il se passe dans ces checker //
+// on y ajoute nos regex //
+const firstNameChecker = value => {
+  let firstName = document.getElementById("firstName");
+  let firstNameError = document.getElementById("firstNameErrorMsg");
+
+  if (
+    // regex toutes les lettres y compris avec accents //
+    !value.match(
+      /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u
+    )
+  ) {
+    firstName.classList.add("p");
+    firstNameError.textContent =
+      "Le prénom ne doit pas contenir de chiffre, caractère spécial";
+    firstNameChoice = null;
+  } else {
+    firstName.classList.remove("p");
+    firstNameError.textContent = "";
+    firstNameChoice = value;
+  }
+};
+
+const lastNameChecker = value => {
+  let lastName = document.getElementById("lastName");
+  let lastNameError = document.getElementById("lastNameErrorMsg");
+
+  if (
+    // regex toutes les lettres y compris avec accents //
+    !value.match(
+      /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u
+    )
+  ) {
+    lastName.classList.add("p");
+    lastNameError.textContent =
+      "Le nom ne doit pas contenir de chiffre, caractère spécial";
+    lastNameChoice = null;
+  } else {
+    lastName.classList.remove("p");
+    lastNameError.textContent = "";
+    lastNameChoice = value;
+  }
+};
+
+const addressChecker = value => {
+  let address = document.getElementById("address");
+  let addressError = document.getElementById("addressErrorMsg");
+
+  if (
+    !value.match(
+      // regex toutes les lettres y compris avec accents + chiffres + minimum 3 caract //
+      /^[a-zA-Z0-9\s,. '-àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{3,}$/
+    )
+  ) {
+    address.classList.add("p");
+    addressError.textContent = "L'adresse doit faire plus de 3 caractères";
+    addressChoice = null;
+  } else {
+    address.classList.remove("p");
+    addressError.textContent = "";
+    addressChoice = value;
+  }
+};
+
+const cityChecker = value => {
+  let city = document.getElementById("city");
+  let cityError = document.getElementById("cityErrorMsg");
+
+  if (
+    !value.match(
+      // regex toutes les lettres y compris avec accents  //
+      /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u
+    )
+  ) {
+    city.classList.add("p");
+    cityError.textContent =
+      "La ville ne doit pas contenir de chiffre, caractère spécial";
+    cityChoice = null;
+  } else {
+    city.classList.remove("p");
+    cityError.textContent = "";
+    cityChoice = value;
+  }
+};
+
+const emailChecker = value => {
+  let email = document.getElementById("email");
+  let emailError = document.getElementById("emailErrorMsg");
+
+  if (
+    !value.match(
+      // regex toutes les lettres y compris avec accents  //
+      /^[\w._-]+@[\w-]+\.[a-z]{2,4}$/i
+    )
+  ) {
+    email.classList.add("p");
+    emailError.textContent = "Format de mail non valide";
+    emailChoice = null;
+  } else {
+    email.classList.remove("p");
+    emailError.textContent = "";
+    emailChoice = value;
+  }
+};
+
+// detection de l'input//
+inputs.forEach(input => {
+  input.addEventListener("input", e => {
+    switch (e.target.id) {
+      case "firstName":
+        firstNameChecker(e.target.value);
+        break;
+      case "lastName":
+        lastNameChecker(e.target.value);
+        break;
+      case "address":
+        addressChecker(e.target.value);
+        break;
+      case "city":
+        cityChecker(e.target.value);
+        break;
+      case "email":
+        emailChecker(e.target.value);
+        break;
+
+      default:
+        nul;
+        break;
+    }
+  });
+});
+
+form.addEventListener("submit", e => {
+  e.preventDefault();
+
+  if (
+    firstNameChoice &&
+    lastNameChoice &&
+    addressChoice &&
+    cityChoice &&
+    emailChoice
+  ) {
+    const data = {
+      prénom: firstNameChoice,
+      nom: lastNameChoice,
+      adresse: addressChoice,
+      ville: cityChoice,
+      email: emailChoice,
+    };
+    console.log(data);
+  } else {
+    alert("Veuillez remplir correctement tous les champs");
+  }
+});
+
 showBasket();
