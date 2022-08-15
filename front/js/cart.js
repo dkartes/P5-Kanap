@@ -183,7 +183,6 @@ function modifQty() {
 //////////////////////
 
 // input du formulaire //
-const form = document.querySelector("form");
 const inputs = document.querySelectorAll(
   'input[type="text"], input[type="email"]'
 );
@@ -324,9 +323,11 @@ inputs.forEach(input => {
   });
 });
 
-form.addEventListener("submit", e => {
-  e.preventDefault();
+let order = document.getElementById("order");
 
+order.addEventListener("click", e => {
+  e.preventDefault();
+  // si les champs du formulaires sont correctement remplis => //
   if (
     firstNameChoice &&
     lastNameChoice &&
@@ -334,17 +335,57 @@ form.addEventListener("submit", e => {
     cityChoice &&
     emailChoice
   ) {
-    const data = {
-      prénom: firstNameChoice,
-      nom: lastNameChoice,
-      adresse: addressChoice,
-      ville: cityChoice,
-      email: emailChoice,
-    };
-    console.log(data);
+    postOrder();
   } else {
     alert("Veuillez remplir correctement tous les champs");
   }
 });
+
+function postOrder() {
+  // on recup toutes les données sous formes d'objet
+  const clientData = {
+    firstName: firstNameChoice,
+    lastName: lastNameChoice,
+    address: addressChoice,
+    city: cityChoice,
+    email: emailChoice,
+  };
+  let basketProducts = [];
+  for (let i = 0; i < basket.length; i++) {
+    basketProducts.push(basket[i].idUrl);
+  }
+  console.log(basketProducts);
+  // regroupement des deux objets //
+  let finalOrder = {
+    contact: clientData,
+    products: basketProducts,
+  };
+
+  console.log(finalOrder);
+
+  const options = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(finalOrder),
+  };
+  console.log(options);
+  fetch("http://localhost:3000/api/products/order", options)
+    .then(res => res.json())
+    // to check res.ok status in the network
+    .then(data => {
+      if (data.orderId) {
+        alert("Commande validée");
+        document.location.href = "confirmation.html?id=" + data.orderId;
+        console.log(data);
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+      alert("erreur");
+    });
+}
 
 showBasket();
